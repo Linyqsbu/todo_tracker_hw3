@@ -162,8 +162,134 @@ module.exports = {
 			// return old ordering if reorder was unsuccessful
 			listItems = found.items;
 			return (found.items);
+		},
 
+		/**
+		 * 
+		 * @param {*} args - contains the list id
+		 * @returns {array} - sorted array
+		 */
+		sortItemsByTask: async (_, args) => {
+			const { _id} = args;
+			const listId = new ObjectId(_id);
+			const found = await Todolist.findOne({_id: listId});
+			let listItems=found.items;
+			
+			let sorted=true;
+			for(let i=1;i<listItems.length;i++){
+				if(listItems[i].description.localeCompare(listItems[i-1].description)<0){
+					sorted=false;
+					break;
+				}
+			}
+
+			if(!sorted){
+				listItems.sort();
+			}
+
+			else{
+				listItems.reverse();
+			}
+
+			const updated=await Todolist.updateOne({_id:listId}, {items:listItems});
+			if(updated) return (listItems);
+			else return (found.items);	
+		},
+
+		sortItemsByDueDate: async (_, args) => {
+			const {_id}=args;
+			const listId = new ObjectId(_id);
+			const found=await Todolist.findOne({_id:listId});
+			let listItems=found.items;
+			let sorted=true;
+			for(let i=1;i<listItems.length;i++){
+				if(listItems[i].due_date.localeCompare(listItems[i-1].due_date)<0){
+					sorted=false;
+					break;
+				}
+			}
+
+			if(!sorted){
+				for(let i=1;i<listItems.length;i++){
+					let key=listItems[i];
+					let j = i-1;
+					
+					while(j>=0 && listItems[j].due_date.localeCompare(key.due_date)>0){
+						listItems[j+1]=listItems[j];
+						j-=1;
+					}
+					listItems[j+1]=key;
+				}
+			}
+
+			else{
+				for(let i=1;i<listItems.length;i++){
+					let key=listItems[i];
+					let j = i-1;
+					
+					while(j>=0 && listItems[j].due_date.localeCompare(key.due_date)<0){
+						listItems[j+1]=listItems[j];
+						j-=1;
+					}
+					
+					listItems[j+1]=key;
+				}
+			}
+			const updated=await Todolist.updateOne({_id:listId}, {items:listItems});
+			if(updated) return listItems;
+			else return found.items;
+		},
+
+		sortItemsByStatus: async (_, args) => {
+			const {_id}=args;
+			const listId=new ObjectId(_id);
+			const found=await Todolist.findOne({_id:listId});
+			let listItems=found.items;
+			let sorted=true;
+			for(let i=1;i<listItems.length;i++){
+				if(!listItems[i].completed && listItems[i-1].completed){ //if complete is on top of incomplete, then the list is not sorted
+					sorted=false;
+					break;
+				}
+			}
+
+			if(!sorted){
+				for(let i=1;i<listItems.length;i++){
+					let key=listItems[i];
+					let j=i-1;
+					while(j>=0 && listItems[j].completed && !key.completed){
+						listItems[j+1]=listItems[j];
+						j -= 1;
+					}
+					listItems[j+1]=key
+				}
+			}
+
+			else{
+				for(let i=1;i<listItems.length;i++){
+					let key=listItems[i];
+					let j=i-1;
+					while(j>=0 && !listItems[j].completed && key.completed){
+						listItems[j+1]=listItems[j];
+						j -= 1;
+					}
+					listItems[j+1]=key
+				}
+			}
+
+			const updated = await Todolist.updateOne({_id:listId}, {items:listItems});
+			if(updated) return listItems;
+			else return found.items;
+		},
+
+		unsortItems: async (_, args) => {
+			const {_id, oldListItems} = args;
+			const listId = new ObjectId(_id);
+			const found= await Todolist.findOne({_id:listId});
+			const updated = await Todolist.updateOne({_id:listId}, {items:oldListItems});
+			if(updated) return oldListItems;
+			else return found.items;
 		}
-
+		
 	}
 }

@@ -34,12 +34,15 @@
     "graphql-passport": "^0.6.3",
     "helmet": "^3.23.3",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.9.19",
+    "mongoose": "^5.12.2",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.4",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
+    "react-router-dom": "^5.2.0",
+    "sass": "^1.32.8",
     "validator": "^13.1.1",
+    "wt-frontend": "^1.2.15",
     "xss-clean": "^0.1.1"
   }
 }

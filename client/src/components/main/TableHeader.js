@@ -6,19 +6,19 @@ const TableHeader = (props) => {
 
     const buttonStyle = props.disabled ? ' table-header-button-disabled ' : 'table-header-button ';
     const clickDisabled = () => { };
-
+    
     return (
         <WRow className="table-header">
             <WCol size="4">
-                <WButton className='table-header-section' wType="texted" >Task</WButton>
+                <WButton className='table-header-section' wType="texted" onClick={() => props.sortItemsByTask()}>Task</WButton>
             </WCol>
 
             <WCol size="3">
-                <WButton className='table-header-section' wType="texted">Due Date</WButton>
+                <WButton className='table-header-section' wType="texted" onClick={() => props.sortItemsByDueDate()}>Due Date</WButton>
             </WCol>
 
             <WCol size="2">
-                <WButton className='table-header-section' wType="texted" >Status</WButton>
+                <WButton className='table-header-section' wType="texted" onClick={() => props.sortItemsByStatus()}>Status</WButton>
             </WCol>
 
             <WCol size="3">

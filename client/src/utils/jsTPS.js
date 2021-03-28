@@ -47,6 +47,28 @@ export class ReorderItems_Transaction extends jsTPS_Transaction {
     
 }
 
+
+export class SortItems_Transaction extends jsTPS_Transaction{
+    constructor(listId, sortCallback, unsortCallback, oldListItems){
+        super();
+        this.listId=listId;
+        this.sortCallback=sortCallback;
+        this.unsortCallback=unsortCallback;
+        this.oldListItems=oldListItems;
+    }
+
+    async doTransaction(){
+        const{data}=await this.sortCallback({variables:{_id:this.listId}});
+        return data;
+    }
+
+    async undoTransaction(){
+        const {data} =await this.unsortCallback({variables:{_id:this.listId, oldListItems: this.oldListItems}});
+        return data;
+    }
+}
+
+
 export class EditItem_Transaction extends jsTPS_Transaction {
 	constructor(listID, itemID, field, prev, update, flag, callback) {
 		super();

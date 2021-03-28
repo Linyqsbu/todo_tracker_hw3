@@ -14,7 +14,8 @@ import { WLayout, WLHeader, WLMain, WLSide } from 'wt-frontend';
 import { UpdateListField_Transaction, 
 	UpdateListItems_Transaction, 
 	ReorderItems_Transaction, 
-	EditItem_Transaction } 				from '../../utils/jsTPS';
+	EditItem_Transaction, 
+	SortItems_Transaction} 				from '../../utils/jsTPS';
 import WInput from 'wt-frontend/build/components/winput/WInput';
 
 
@@ -33,7 +34,10 @@ const Homescreen = (props) => {
 	const [DeleteTodoItem] 			= useMutation(mutations.DELETE_ITEM);
 	const [AddTodolist] 			= useMutation(mutations.ADD_TODOLIST);
 	const [AddTodoItem] 			= useMutation(mutations.ADD_ITEM);
-
+	const [SortItemsByTask]			= useMutation(mutations.SORT_ITEMS_BY_TASK);
+	const [SortItemsByDueDate]		= useMutation(mutations.SORT_ITEMS_BY_DUE_DATE);
+	const [SortItemsByStatus]		= useMutation(mutations.SORT_ITEMS_BY_STATUS);
+	const [UnsortItems]				= useMutation(mutations.UNSORT_ITEMS);
 
 	const { loading, error, data, refetch } = useQuery(GET_DB_TODOS);
 	if(loading) { console.log(loading, 'loading'); }
@@ -124,8 +128,71 @@ const Homescreen = (props) => {
 		let transaction = new ReorderItems_Transaction(listID, itemID, dir, ReorderTodoItems);
 		props.tps.addTransaction(transaction);
 		tpsRedo();
-
 	};
+
+	const sortItemsByTask = async () => {
+		if(activeList.items){
+			let  oldListItems = activeList.items.map((item) => {
+				let newItem={
+					_id: item._id,
+					id: item.id,
+					description: item.description,
+					due_date: item.due_date,
+					assigned_to: item.assigned_to,
+					completed: item.completed
+				};
+				return newItem;
+			});
+			
+			let listId=activeList._id;
+			let transaction = new SortItems_Transaction(listId, SortItemsByTask, UnsortItems, oldListItems);
+			props.tps.addTransaction(transaction);
+			tpsRedo();
+		}
+	};
+
+	const sortItemsByDueDate = async () => {
+		
+		if(activeList.items){
+
+			let  oldListItems = activeList.items.map((item) => {
+				let newItem={
+					_id: item._id,
+					id: item.id,
+					description: item.description,
+					due_date: item.due_date,
+					assigned_to: item.assigned_to,
+					completed: item.completed
+				};
+				return newItem;
+			});
+			let listId=activeList._id;
+			let transaction = new SortItems_Transaction(listId, SortItemsByDueDate, UnsortItems, oldListItems);
+			props.tps.addTransaction(transaction);
+			tpsRedo();
+		}
+	}
+
+	const sortItemsByStatus = async () => {
+		if(activeList.items){
+			let  oldListItems = activeList.items.map((item) => {
+				let newItem={
+					_id: item._id,
+					id: item.id,
+					description: item.description,
+					due_date: item.due_date,
+					assigned_to: item.assigned_to,
+					completed: item.completed
+				};
+				return newItem;
+			});
+			let listId=activeList._id;
+			let transaction = new SortItems_Transaction(listId, SortItemsByStatus, UnsortItems, oldListItems);
+			props.tps.addTransaction(transaction);
+			tpsRedo();
+		}
+	}
+
 
 	const createNewList = async () => {
 		const length = todolists.length
@@ -146,6 +213,10 @@ const Homescreen = (props) => {
 		refetch();
 		setActiveList({});
 	};
+	
+
+
+	
 
 	const updateListField = async (_id, field, value, prev) => {
 		let transaction = new UpdateListField_Transaction(_id, field, prev, value, UpdateTodolistField);
@@ -158,6 +229,8 @@ const Homescreen = (props) => {
 		const todo = todolists.find(todo => todo.id === id || todo._id === id);
 		setActiveList(todo);
 	};
+
+	
 
 	
 	/*
@@ -182,6 +255,8 @@ const Homescreen = (props) => {
 		toggleShowLogin(false);
 		toggleShowDelete(!showDelete)
 	}
+
+	
 
 	return (
 		<WLayout wLayout="header-lside">
@@ -224,8 +299,11 @@ const Homescreen = (props) => {
 								<MainContents
 									addItem={addItem} deleteItem={deleteItem}
 									editItem={editItem} reorderItem={reorderItem}
-									setShowDelete={setShowDelete}
+									setShowDelete={setShowDelete} 
 									activeList={activeList} setActiveList={setActiveList}
+									sortItemsByTask={sortItemsByTask}
+									sortItemsByDueDate={sortItemsByDueDate}
+									sortItemsByStatus={sortItemsByStatus}
 								/>
 							</div>
 						:
@@ -235,15 +313,21 @@ const Homescreen = (props) => {
 			</WLMain>
 
 			{
-				showDelete && (<Delete deleteList={deleteList} activeid={activeList._id} setShowDelete={setShowDelete} />)
+				showDelete && (<div className="modal-overlay">
+								<Delete deleteList={deleteList} activeid={activeList._id} setShowDelete={setShowDelete} />
+								</div>)
 			}
 
 			{
-				showCreate && (<CreateAccount fetchUser={props.fetchUser} setShowCreate={setShowCreate} />)
+				showCreate && (<div className="modal-overlay">
+								<CreateAccount fetchUser={props.fetchUser} setShowCreate={setShowCreate} />
+								</div>)
 			}
 
 			{
-				showLogin && (<Login fetchUser={props.fetchUser} refetchTodos={refetch}setShowLogin={setShowLogin} />)
+				showLogin && (<div className="modal-overlay">
+								<Login fetchUser={props.fetchUser} refetchTodos={refetch} setShowLogin={setShowLogin} />
+								</div>)
 			}
 
 		</WLayout>

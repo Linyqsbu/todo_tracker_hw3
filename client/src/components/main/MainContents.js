@@ -6,8 +6,11 @@ const MainContents = (props) => {
     return (
         <div className='table ' >
             <TableHeader
-                disabled={!props.activeList._id} addItem={props.addItem}
+                disabled={!props.activeList._id} addItem={props.addItem} 
                 setShowDelete={props.setShowDelete} setActiveList={props.setActiveList}
+                _id={props.activeList._id} sortItemsByTask={props.sortItemsByTask}
+                sortItemsByDueDate={props.sortItemsByDueDate}
+                sortItemsByStatus={props.sortItemsByStatus}
             />
             <TableContents
                 key={props.activeList.id} activeList={props.activeList}
