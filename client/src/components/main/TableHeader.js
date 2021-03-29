@@ -9,16 +9,20 @@ const TableHeader = (props) => {
     
     return (
         <WRow className="table-header">
-            <WCol size="4">
+            <WCol size="3">
                 <WButton className='table-header-section' wType="texted" onClick={() => props.sortItemsByTask()}>Task</WButton>
             </WCol>
 
-            <WCol size="3">
+            <WCol size="2">
                 <WButton className='table-header-section' wType="texted" onClick={() => props.sortItemsByDueDate()}>Due Date</WButton>
             </WCol>
 
             <WCol size="2">
                 <WButton className='table-header-section' wType="texted" onClick={() => props.sortItemsByStatus()}>Status</WButton>
+            </WCol>
+
+            <WCol size="2">
+                <WButton className='table-header-section' wType="texted" onClick={() => props.sortItemsByAssignedTo()}>Assign To</WButton>
             </WCol>
 
             <WCol size="3">
@@ -32,6 +36,7 @@ const TableHeader = (props) => {
                     <WButton onClick={props.disabled ? clickDisabled : () => props.setActiveList({})} wType="texted" className={`${buttonStyle}`}>
                         <i className="material-icons">close</i>
                     </WButton>
+                    
                 </div>
             </WCol>
 

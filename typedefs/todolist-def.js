@@ -32,6 +32,7 @@ const typeDefs = gql `
 		sortItemsByTask(_id: String!):[Item]
 		sortItemsByDueDate(_id:String!):[Item]
 		sortItemsByStatus(_id:String!):[Item]
+		sortItemsByAssignedTo(_id:String!):[Item]
 		unsortItems(_id:String!, oldListItems:[ItemInput]!):[Item]
 	}
 	input FieldInput {

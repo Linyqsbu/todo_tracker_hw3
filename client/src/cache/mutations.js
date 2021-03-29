@@ -143,3 +143,16 @@ export const UNSORT_ITEMS= gql`
 		}
 	}
 `;
+
+export const SORT_ITEMS_BY_ASSIGNED_TO=gql`
+	mutation SortItemsByAssignedTo($_id:String!){
+		sortItemsByAssignedTo(_id:$_id){
+			_id
+			id
+			description
+			due_date
+			assigned_to
+			completed
+		}
+	}
+`;

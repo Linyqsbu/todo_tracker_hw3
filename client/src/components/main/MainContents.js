@@ -11,6 +11,7 @@ const MainContents = (props) => {
                 _id={props.activeList._id} sortItemsByTask={props.sortItemsByTask}
                 sortItemsByDueDate={props.sortItemsByDueDate}
                 sortItemsByStatus={props.sortItemsByStatus}
+                sortItemsByAssignedTo={props.sortItemsByAssignedTo}
             />
             <TableContents
                 key={props.activeList.id} activeList={props.activeList}

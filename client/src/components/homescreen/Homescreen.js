@@ -37,6 +37,7 @@ const Homescreen = (props) => {
 	const [SortItemsByTask]			= useMutation(mutations.SORT_ITEMS_BY_TASK);
 	const [SortItemsByDueDate]		= useMutation(mutations.SORT_ITEMS_BY_DUE_DATE);
 	const [SortItemsByStatus]		= useMutation(mutations.SORT_ITEMS_BY_STATUS);
+	const [SortItemsByAssignedTo]	= useMutation(mutations.SORT_ITEMS_BY_ASSIGNED_TO);
 	const [UnsortItems]				= useMutation(mutations.UNSORT_ITEMS);
 
 	const { loading, error, data, refetch } = useQuery(GET_DB_TODOS);
@@ -84,7 +85,7 @@ const Homescreen = (props) => {
 			id: lastID,
 			description: 'No Description',
 			due_date: 'No Date',
-			assigned_to: props.user._id,
+			assigned_to: "Unknown",
 			completed: false
 		};
 		let opcode = 1;
@@ -188,6 +189,26 @@ const Homescreen = (props) => {
 			});
 			let listId=activeList._id;
 			let transaction = new SortItems_Transaction(listId, SortItemsByStatus, UnsortItems, oldListItems);
+			props.tps.addTransaction(transaction);
+			tpsRedo();
+		}
+	}
+
+	const sortItemsByAssignedTo = async () => {
+		if(activeList.items){
+			let  oldListItems = activeList.items.map((item) => {
+				let newItem={
+					_id: item._id,
+					id: item.id,
+					description: item.description,
+					due_date: item.due_date,
+					assigned_to: item.assigned_to,
+					completed: item.completed
+				};
+				return newItem;
+			});
+			let listId=activeList._id;
+			let transaction = new SortItems_Transaction(listId, SortItemsByAssignedTo, UnsortItems, oldListItems);
 			props.tps.addTransaction(transaction);
 			tpsRedo();
 		}
@@ -304,6 +325,7 @@ const Homescreen = (props) => {
 									sortItemsByTask={sortItemsByTask}
 									sortItemsByDueDate={sortItemsByDueDate}
 									sortItemsByStatus={sortItemsByStatus}
+									sortItemsByAssignedTo={sortItemsByAssignedTo}
 								/>
 							</div>
 						:

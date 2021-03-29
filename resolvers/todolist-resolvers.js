@@ -282,6 +282,50 @@ module.exports = {
 			else return found.items;
 		},
 
+		sortItemsByAssignedTo: async (_, args) => {
+			const {_id}=args;
+			const listId = new ObjectId(_id);
+			const found=await Todolist.findOne({_id:listId});
+			let listItems=found.items;
+			let sorted=true;
+			for(let i=1;i<listItems.length;i++){
+				if(listItems[i].assigned_to.localeCompare(listItems[i-1].assigned_to)<0){
+					sorted=false;
+					break;
+				}
+			}
+
+			if(!sorted){
+				for(let i=1;i<listItems.length;i++){
+					let key=listItems[i];
+					let j = i-1;
+					
+					while(j>=0 && listItems[j].assigned_to.localeCompare(key.assigned_to)>0){
+						listItems[j+1]=listItems[j];
+						j-=1;
+					}
+					listItems[j+1]=key;
+				}
+			}
+
+			else{
+				for(let i=1;i<listItems.length;i++){
+					let key=listItems[i];
+					let j = i-1;
+					
+					while(j>=0 && listItems[j].assigned_to.localeCompare(key.assigned_to)<0){
+						listItems[j+1]=listItems[j];
+						j-=1;
+					}
+					
+					listItems[j+1]=key;
+				}
+			}
+			const updated=await Todolist.updateOne({_id:listId}, {items:listItems});
+			if(updated) return listItems;
+			else return found.items;
+		},
+
 		unsortItems: async (_, args) => {
 			const {_id, oldListItems} = args;
 			const listId = new ObjectId(_id);
