@@ -82,6 +82,9 @@ const CreateAccount = (props) => {
 			<WButton className="modal-button" onClick={handleCreateAccount} span clickAnimation="ripple-light" hoverAnimation="darken" shape="rounded" color="primary">
 				Submit
 			</WButton>
+			<WButton  className="modal-button" onClick={() => props.setShowCreate(false)} span clickAnimation="ripple-light"  shape="rounded" >
+				Cancel
+			</WButton>
 		</div>
 	);
 }

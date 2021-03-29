@@ -63,6 +63,9 @@ const Login = (props) => {
 				<WButton className="modal-button" onClick={handleLogin} span clickAnimation="ripple-light" hoverAnimation="darken" shape="rounded" color="primary">
 					Login
 				</WButton>
+				<WButton className="modal-button" onClick={() => props.setShowLogin(false)} span clickAnimation="ripple-light" shape="rounded" >
+					Cancel
+				</WButton>
 			</div>
 		</div>
 	);

@@ -200,3 +200,24 @@ html, body {
 .table-entry-buttons {
     color: $text-color;
 }
+
+.login-modal{
+    background-color: $modal-background;
+    border:solid;
+    border-width:20px;
+    border-color:$modal-background;
+}
+
+.signup-modal{
+    background-color: $modal-background;
+    border:solid;
+    border-width:20px;
+    border-color:$modal-background;
+}
+
+.delete-modal{
+    background-color: $modal-background;
+    border:solid;
+    border-width:20px;
+    border-color:$modal-background;
+}
