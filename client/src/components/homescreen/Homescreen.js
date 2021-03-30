@@ -305,7 +305,7 @@ const Homescreen = (props) => {
 							<SidebarContents
 								todolists={todolists} activeid={activeList.id} auth={auth}
 								handleSetActive={handleSetActive} createNewList={createNewList}
-								undo={tpsUndo} redo={tpsRedo}
+								
 								updateListField={updateListField}
 							/>
 							:
@@ -326,6 +326,7 @@ const Homescreen = (props) => {
 									sortItemsByDueDate={sortItemsByDueDate}
 									sortItemsByStatus={sortItemsByStatus}
 									sortItemsByAssignedTo={sortItemsByAssignedTo}
+									undo={tpsUndo} redo={tpsRedo}
 								/>
 							</div>
 						:
