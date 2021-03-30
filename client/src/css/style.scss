@@ -132,12 +132,18 @@ html, body {
 }
 
 .table-header-button {
-    transition: 0.1s ease-in-out;
     color: var(--light-gray);
 }
 
 .table-header-button-disabled {
-    transition: 0.1s ease-in-out;
+    color: var(--warm-black);
+}
+
+.table-entry-buttons-disabled{
+    color: var(--warm-black);
+}
+
+.undo-redo-disabled {
     color: var(--warm-black);
 }
 

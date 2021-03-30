@@ -8,11 +8,14 @@ const MainContents = (props) => {
             <TableHeader
                 disabled={!props.activeList._id} addItem={props.addItem} 
                 setShowDelete={props.setShowDelete} setActiveList={props.setActiveList}
-                _id={props.activeList._id} sortItemsByTask={props.sortItemsByTask}
+                _id={props.activeList._id} 
+                sortItemsByTask={props.sortItemsByTask}
                 sortItemsByDueDate={props.sortItemsByDueDate}
                 sortItemsByStatus={props.sortItemsByStatus}
                 sortItemsByAssignedTo={props.sortItemsByAssignedTo}
-                undo={props.undo} redo={props.redo} 
+                undo={props.undo} redo={props.redo}
+                undoable={props.undoable} redoable={props.redoable}
+                tps={props.tps}
             />
             <TableContents
                 key={props.activeList.id} activeList={props.activeList}

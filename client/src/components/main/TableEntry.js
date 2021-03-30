@@ -6,6 +6,8 @@ const TableEntry = (props) => {
 
     const completeStyle = data.completed ? ' complete-task' : ' incomplete-task';
     const assignedToColor = data.completed? 'black':'red';
+    const moveupButtonStyle = props.moveupdable ? "table-entry-buttons" : "table-entry-buttons-disabled";
+    const movedownButtonStyle = props.movedownable ? "table-entry-buttons" : "table-entry-buttons-disabled";
     const description = data.description;
     const due_date = data.due_date;
     const status = data.completed ? 'complete' : 'incomplete';
@@ -42,6 +44,8 @@ const TableEntry = (props) => {
         const prevAssign = assigned_to;
         props.editItem(data._id, 'assigned_to', newAssign, prevAssign);
     }
+
+    const clickDisabled = () => {}
 
     return (
         <WRow className='table-entry'>
@@ -111,10 +115,10 @@ const TableEntry = (props) => {
 
             <WCol size="3">
                 <div className='button-group'>
-                    <WButton className="table-entry-buttons" onClick={() => props.reorderItem(data._id, -1)} wType="texted">
+                    <WButton className={`${moveupButtonStyle}`} onClick={props.moveupdable ? () => props.reorderItem(data._id, -1) : clickDisabled} wType="texted">
                         <i className="material-icons">expand_less</i>
                     </WButton>
-                    <WButton className="table-entry-buttons" onClick={() => props.reorderItem(data._id, 1)} wType="texted">
+                    <WButton className={`${movedownButtonStyle}`} onClick={props.movedownable ? () => props.reorderItem(data._id, 1) : clickDisabled} wType="texted">
                         <i className="material-icons">expand_more</i>
                     </WButton>
                     <WButton className="table-entry-buttons" onClick={() => props.deleteItem(data)} wType="texted">

@@ -9,6 +9,8 @@ const TableContents = (props) => {
             {
                 entries.map((entry, index) => (
                     <TableEntry
+                        moveupdable={index!=0}
+                        movedownable={index!=entries.length-1}
                         data={entry} key={entry.id}
                         deleteItem={props.deleteItem} reorderItem={props.reorderItem}
                         editItem={props.editItem}

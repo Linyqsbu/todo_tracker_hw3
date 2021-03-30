@@ -227,12 +227,14 @@ const Homescreen = (props) => {
 		}
 		const { data } = await AddTodolist({ variables: { todolist: list }, refetchQueries: [{ query: GET_DB_TODOS }] });
 		setActiveList(list)
+		props.tps.clearAllTransactions();
 	};
 
 	const deleteList = async (_id) => {
 		DeleteTodolist({ variables: { _id: _id }, refetchQueries: [{ query: GET_DB_TODOS }] });
 		refetch();
 		setActiveList({});
+		props.tps.clearAllTransactions();
 	};
 	
 
@@ -249,6 +251,7 @@ const Homescreen = (props) => {
 	const handleSetActive = (id) => {
 		const todo = todolists.find(todo => todo.id === id || todo._id === id);
 		setActiveList(todo);
+		props.tps.clearAllTransactions();
 	};
 
 	
@@ -327,6 +330,9 @@ const Homescreen = (props) => {
 									sortItemsByStatus={sortItemsByStatus}
 									sortItemsByAssignedTo={sortItemsByAssignedTo}
 									undo={tpsUndo} redo={tpsRedo}
+									undoable={props.tps.hasTransactionToUndo()}
+									redoable={props.tps.hasTransactionToRedo()}
+									tps={props.tps}
 								/>
 							</div>
 						:
