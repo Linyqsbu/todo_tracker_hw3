@@ -69,6 +69,9 @@ module.exports = {
 			if(updated) return objectId;
 			else return ('Could not add todolist');
 		},
+
+		
+
 		/** 
 		 	@param 	 {object} args - a todolist objectID and item objectID
 			@returns {array} the updated item array on success or the initial 
@@ -96,6 +99,7 @@ module.exports = {
 			if(deleted) return true;
 			else return false;
 		},
+
 		/** 
 		 	@param 	 {object} args - a todolist objectID, field, and the update value
 			@returns {boolean} true on successful update, false on failure
@@ -184,11 +188,30 @@ module.exports = {
 			}
 
 			if(!sorted){
-				listItems.sort();
+				for(let i=1;i<listItems.length;i++){
+					let key=listItems[i];
+					let j = i-1;
+					
+					while(j>=0 && listItems[j].description.localeCompare(key.description)>0){
+						listItems[j+1]=listItems[j];
+						j-=1;
+					}
+					listItems[j+1]=key;
+				}
 			}
 
 			else{
-				listItems.reverse();
+				for(let i=1;i<listItems.length;i++){
+					let key=listItems[i];
+					let j = i-1;
+					
+					while(j>=0 && listItems[j].description.localeCompare(key.description)<0){
+						listItems[j+1]=listItems[j];
+						j-=1;
+					}
+					
+					listItems[j+1]=key;
+				}
 			}
 
 			const updated=await Todolist.updateOne({_id:listId}, {items:listItems});

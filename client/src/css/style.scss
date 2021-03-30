@@ -144,7 +144,7 @@ html, body {
 }
 
 .undo-redo-disabled {
-    color: var(--warm-black);
+    color: gray;
 }
 
 .table-header {
@@ -164,7 +164,7 @@ html, body {
 }
 
 .table-input {
-    /*background-color: var(--deep-blue-lighter);
+    background-color: var(--deep-blue-lighter);
     border-top: none;
     border-left: none;
     border-right: none;
@@ -173,8 +173,10 @@ html, body {
     padding:0;
     font-family: 'Roboto';
     font-size: 14px;
-    color: var(--light-gray);*/
+    color: var(--light-gray);
+    cursor:auto;
 }
+
 
 .table-select {
     font-family: Roboto;
