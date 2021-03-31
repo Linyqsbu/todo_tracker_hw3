@@ -9,13 +9,15 @@ import CreateAccount 					from '../modals/CreateAccount';
 import { GET_DB_TODOS } 				from '../../cache/queries';
 import * as mutations 					from '../../cache/mutations';
 import { useMutation, useQuery } 		from '@apollo/client';
-import { WNavbar, WSidebar, WNavItem } 	from 'wt-frontend';
+import { WNavbar, WSidebar, WNavItem, WModal } 	from 'wt-frontend';
 import { WLayout, WLHeader, WLMain, WLSide } from 'wt-frontend';
 import { UpdateListField_Transaction, 
 	UpdateListItems_Transaction, 
 	ReorderItems_Transaction, 
 	EditItem_Transaction, 
-	SortItems_Transaction} 				from '../../utils/jsTPS';
+	SortItems_Transaction,
+	DeleteItem_Transaction,
+	AddItem_Transaction} 				from '../../utils/jsTPS';
 import WInput from 'wt-frontend/build/components/winput/WInput';
 
 
@@ -26,7 +28,6 @@ const Homescreen = (props) => {
 	const [showDelete, toggleShowDelete] 	= useState(false);
 	const [showLogin, toggleShowLogin] 		= useState(false);
 	const [showCreate, toggleShowCreate] 	= useState(false);
-	const [highestId, setHighestId]			= useState(0);
 
 	const [ReorderTodoItems] 		= useMutation(mutations.REORDER_ITEMS);
 	const [UpdateTodoItemField] 	= useMutation(mutations.UPDATE_ITEM_FIELD);
@@ -40,6 +41,18 @@ const Homescreen = (props) => {
 	const [SortItemsByStatus]		= useMutation(mutations.SORT_ITEMS_BY_STATUS);
 	const [SortItemsByAssignedTo]	= useMutation(mutations.SORT_ITEMS_BY_ASSIGNED_TO);
 	const [UnsortItems]				= useMutation(mutations.UNSORT_ITEMS);
+	const [AddItemWithIndex]		= useMutation(mutations.ADD_ITEM_WITH_INDEX);
+	
+
+	useEffect(() => {
+		document.addEventListener("keydown", handleKeyDown);
+		
+		return () => {
+			document.removeEventListener("keydown", handleKeyDown);
+		};
+	})
+
+	
 
 	const { loading, error, data, refetch } = useQuery(GET_DB_TODOS);
 	if(loading) { console.log(loading, 'loading'); }
@@ -73,14 +86,37 @@ const Homescreen = (props) => {
 		return retVal;
 	}
 
+	const handleKeyDown = async (event) => {
+		if(event.ctrlKey){
+			if(event.keyCode===90){
+				if(props.tps.hasTransactionToUndo()){
+					tpsUndo();
+				}
+			}
 
+			if(event.keyCode===89){
+				if(props.tps.hasTransactionToRedo()){
+					tpsRedo();
+				}
+			}
+		}
+	}
+
+	
 	// Creates a default item and passes it to the backend resolver.
 	// The return id is assigned to the item, and the item is appended
 	//  to the local cache copy of the active todolist. 
 	const addItem = async () => {
 		let list = activeList;
 		const items = list.items;
-		setHighestId(highestId+1);
+		
+		var highestId;
+		for(let i=0;i<activeList.items.length;i++){
+			if(activeList.items[i].id>=highestId){
+				highestId=activeList.items[i].id+1;
+			}
+		}
+
 		const newItem = {
 			_id: '',
 			id: highestId,
@@ -92,16 +128,17 @@ const Homescreen = (props) => {
 		let opcode = 1;
 		let itemID = newItem._id;
 		let listID = activeList._id;
-		let transaction = new UpdateListItems_Transaction(listID, itemID, newItem, opcode, AddTodoItem, DeleteTodoItem);
+		let transaction = new AddItem_Transaction(listID, newItem, AddTodoItem, DeleteTodoItem);
 		props.tps.addTransaction(transaction);
 		tpsRedo();
 	};
+	
+
 
 
 	const deleteItem = async (item) => {
 		let listID = activeList._id;
 		let itemID = item._id;
-		let opcode = 0;
 		let itemToDelete = {
 			_id: item._id,
 			id: item.id,
@@ -110,10 +147,19 @@ const Homescreen = (props) => {
 			assigned_to: item.assigned_to,
 			completed: item.completed
 		}
-		let transaction = new UpdateListItems_Transaction(listID, itemID, itemToDelete, opcode, AddTodoItem, DeleteTodoItem);
+		let index;
+		for(let i=0;i<activeList.items.length;i++){
+			if(item.id===activeList.items[i].id){
+				index=i;
+				break;
+			}
+		}
+		let transaction = new DeleteItem_Transaction(listID, itemID, item, index, DeleteTodoItem, AddItemWithIndex);
 		props.tps.addTransaction(transaction);
 		tpsRedo();
 	};
+
+	
 
 	const editItem = async (itemID, field, value, prev) => {
 		let flag = 0;
@@ -237,6 +283,7 @@ const Homescreen = (props) => {
 		props.tps.clearAllTransactions();
 	};
 
+
 	const updateListField = async (_id, field, value, prev) => {
 		let transaction = new UpdateListField_Transaction(_id, field, prev, value, UpdateTodolistField);
 		props.tps.addTransaction(transaction);
@@ -338,21 +385,21 @@ const Homescreen = (props) => {
 			</WLMain>
 
 			{
-				showDelete && (<div className="modal-overlay">
+				showDelete && (<WModal visible={true} className="modal-overlay">
 								<Delete deleteList={deleteList} activeid={activeList._id} setShowDelete={setShowDelete} />
-								</div>)
+								</WModal>)
 			}
 
 			{
-				showCreate && (<div className="modal-overlay">
+				showCreate && (<WModal visible={true} className="modal-overlay">
 								<CreateAccount fetchUser={props.fetchUser} setShowCreate={setShowCreate} />
-								</div>)
+								</WModal>)
 			}
 
 			{
-				showLogin && (<div className="modal-overlay">
+				showLogin && (<WModal visible={true} className="modal-overlay">
 								<Login fetchUser={props.fetchUser} refetchTodos={refetch} setShowLogin={setShowLogin} />
-								</div>)
+								</WModal>)
 			}
 
 		</WLayout>

@@ -40,16 +40,30 @@ module.exports = {
 			const listId = new ObjectId(_id);
 			const objectId = new ObjectId();
 			const found = await Todolist.findOne({_id: listId});
-			if(!found) return ('Todolist not found');
 			item._id = objectId;
 			let listItems = found.items;
+
 			listItems.push(item);
 			
 			const updated = await Todolist.updateOne({_id: listId}, { items: listItems });
 
-			if(updated) return (objectId);
-			else return ('Could not add item');
+			if(updated) return listItems;
+			else return found.items;
 		},
+
+		addItemWithIndex: async(_, args) => {
+			const {_id, item, index} = args;
+			const listId = new ObjectId(_id);
+		
+			const found = await Todolist.findOne({_id:listId});
+			let listItems=found.items;
+			listItems.splice(index, 0, item);
+
+			const updated = await Todolist.updateOne({_id:listId}, {items:listItems});
+			if(updated) return listItems;
+			else return found.items;
+		},
+
 		/** 
 		 	@param 	 {object} args - an empty todolist object
 			@returns {string} the objectID of the todolist or an error message
@@ -299,7 +313,6 @@ module.exports = {
 					listItems[j+1]=key
 				}
 			}
-
 			const updated = await Todolist.updateOne({_id:listId}, {items:listItems});
 			if(updated) return listItems;
 			else return found.items;
@@ -340,7 +353,6 @@ module.exports = {
 						listItems[j+1]=listItems[j];
 						j-=1;
 					}
-					
 					listItems[j+1]=key;
 				}
 			}

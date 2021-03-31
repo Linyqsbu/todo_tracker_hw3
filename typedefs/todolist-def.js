@@ -22,7 +22,8 @@ const typeDefs = gql `
 		getTodoById(_id: String!): Todolist 
 	}
 	extend type Mutation {
-		addItem(item: ItemInput!, _id: String!): String
+		addItem(item: ItemInput!, _id: String!): [Item]
+		addItemWithIndex(item: ItemInput!, _id:String!, index:Int!): [Item]
 		addTodolist(todolist: TodoInput!): String
 		deleteItem(itemId: String!, _id: String!): [Item]		
 		deleteTodolist(_id: String!): Boolean
