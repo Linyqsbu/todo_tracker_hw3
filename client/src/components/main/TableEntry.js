@@ -21,28 +21,32 @@ const TableEntry = (props) => {
         toggleDateEdit(false);
         const newDate = e.target.value ? e.target.value : 'No Date';
         const prevDate = due_date;
-        props.editItem(data._id, 'due_date', newDate, prevDate);
+        if(newDate!==prevDate)
+            props.editItem(data._id, 'due_date', newDate, prevDate);
     };
 
     const handleDescrEdit = (e) => {
         toggleDescrEdit(false);
         const newDescr = e.target.value ? e.target.value : 'No Description';
         const prevDescr = description;
-        props.editItem(data._id, 'description', newDescr, prevDescr);
+        if(newDescr!==prevDescr)
+            props.editItem(data._id, 'description', newDescr, prevDescr);
     };
 
     const handleStatusEdit = (e) => {
         toggleStatusEdit(false);
         const newStatus = e.target.value ? e.target.value : false;
         const prevStatus = status;
-        props.editItem(data._id, 'completed', newStatus, prevStatus);
+        if(newStatus!==prevStatus)
+            props.editItem(data._id, 'completed', newStatus, prevStatus);
     };
 
     const handleAssignEdit = (e) => {
         toggleAssignEdit(false);
         const newAssign = e.target.value ? e.target.value : "No Assign To";
         const prevAssign = assigned_to;
-        props.editItem(data._id, 'assigned_to', newAssign, prevAssign);
+        if(newAssign!==prevAssign)
+            props.editItem(data._id, 'assigned_to', newAssign, prevAssign);
     }
 
     const clickDisabled = () => {}

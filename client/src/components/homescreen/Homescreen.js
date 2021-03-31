@@ -109,21 +109,18 @@ const Homescreen = (props) => {
 	const addItem = async () => {
 		let list = activeList;
 		const items = list.items;
-<<<<<<< HEAD
+
 		
-		var highestId;
+		var highestId=0;
 		for(let i=0;i<activeList.items.length;i++){
 			if(activeList.items[i].id>=highestId){
 				highestId=activeList.items[i].id+1;
 			}
 		}
 
-=======
-		const lastID = items.length >= 1 ? items[items.length - 1].id + 1 : 0;
->>>>>>> parent of 30cdf4e (fixed a bug where the table entries have duplicate keys)
 		const newItem = {
 			_id: '',
-			id: lastID,
+			id: highestId,
 			description: 'No Description',
 			due_date: 'No Date',
 			assigned_to: "Unknown",
@@ -132,7 +129,8 @@ const Homescreen = (props) => {
 		let opcode = 1;
 		let itemID = newItem._id;
 		let listID = activeList._id;
-		let transaction = new AddItem_Transaction(listID, newItem, AddTodoItem, DeleteTodoItem);
+		let transaction = new UpdateListItems_Transaction(listID, itemID, newItem, opcode, AddTodoItem, DeleteTodoItem);
+		//let transaction = new AddItem_Transaction(listID, newItem, AddTodoItem, DeleteTodoItem);
 		props.tps.addTransaction(transaction);
 		tpsRedo();
 	};
@@ -143,6 +141,7 @@ const Homescreen = (props) => {
 	const deleteItem = async (item) => {
 		let listID = activeList._id;
 		let itemID = item._id;
+		let opcode=0;
 		let itemToDelete = {
 			_id: item._id,
 			id: item.id,
@@ -158,7 +157,9 @@ const Homescreen = (props) => {
 				break;
 			}
 		}
-		let transaction = new DeleteItem_Transaction(listID, itemID, item, index, DeleteTodoItem, AddItemWithIndex);
+		
+		let transaction = new UpdateListItems_Transaction(listID, itemID, itemToDelete, opcode, AddItemWithIndex, DeleteTodoItem, index);
+		//let transaction = new DeleteItem_Transaction(listID, itemID, item, index, DeleteTodoItem, AddItemWithIndex);
 		props.tps.addTransaction(transaction);
 		tpsRedo();
 	};
@@ -277,7 +278,7 @@ const Homescreen = (props) => {
 			items: [],
 		}
 		const { data } = await AddTodolist({ variables: { todolist: list }, refetchQueries: [{ query: GET_DB_TODOS }] });
-		setActiveList(list)
+		setActiveList(list);
 		props.tps.clearAllTransactions();
 	};
 
@@ -288,10 +289,6 @@ const Homescreen = (props) => {
 		props.tps.clearAllTransactions();
 	};
 	
-
-
-	
-
 
 	const updateListField = async (_id, field, value, prev) => {
 		let transaction = new UpdateListField_Transaction(_id, field, prev, value, UpdateTodolistField);
@@ -382,8 +379,6 @@ const Homescreen = (props) => {
 									sortItemsByStatus={sortItemsByStatus}
 									sortItemsByAssignedTo={sortItemsByAssignedTo}
 									undo={tpsUndo} redo={tpsRedo}
-									undoable={props.tps.hasTransactionToUndo()}
-									redoable={props.tps.hasTransactionToRedo()}
 									tps={props.tps}
 								/>
 							</div>

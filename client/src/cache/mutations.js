@@ -31,27 +31,13 @@ export const LOGOUT = gql`
 
 export const ADD_ITEM = gql`
 	mutation AddItem($item: ItemInput!, $_id: String!) {
-		addItem(item: $item, _id: $_id){
-			_id
-			id
-			description
-			due_date
-			assigned_to
-			completed
-		}
+		addItem(item: $item, _id: $_id)
 	}
 `;
 
 export const ADD_ITEM_WITH_INDEX = gql `
 	mutation AddItemWithIndex($item: ItemInput!, $_id:String!, $index: Int!){
-		addItemWithIndex(item: $item, _id:$_id, index:$index){
-			_id
-			id
-			description
-			due_date
-			assigned_to
-			completed
-		}
+		addItemWithIndex(item: $item, _id:$_id, index:$index)
 	}
 `;
 

@@ -11,7 +11,7 @@ const TableContents = (props) => {
                     <TableEntry
                         moveupdable={index!=0}
                         movedownable={index!=entries.length-1}
-                        data={entry} key={entry.id}
+                        data={entry} key={entry._id}
                         deleteItem={props.deleteItem} reorderItem={props.reorderItem}
                         editItem={props.editItem}
                     />

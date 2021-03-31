@@ -36,32 +36,38 @@ module.exports = {
 			@returns {string} the objectID of the item or an error message
 		**/
 		addItem: async(_, args) => {
-			const { _id, item } = args;
+			const { _id, item, index } = args;
 			const listId = new ObjectId(_id);
 			const objectId = new ObjectId();
 			const found = await Todolist.findOne({_id: listId});
+			if(!found) return ("Todolist not fosund");
 			item._id = objectId;
 			let listItems = found.items;
-
-			listItems.push(item);
+			if(index){
+				console.log(index)
+				listItems.splice(index, 0, item);
+			}
+			else
+				listItems.push(item);
 			
 			const updated = await Todolist.updateOne({_id: listId}, { items: listItems });
 
-			if(updated) return listItems;
-			else return found.items;
+			if(updated) return (objectId);
+			else return ('could not find item');
 		},
 
 		addItemWithIndex: async(_, args) => {
 			const {_id, item, index} = args;
 			const listId = new ObjectId(_id);
-		
+			let objectId = new ObjectId(item._id);
 			const found = await Todolist.findOne({_id:listId});
+			if(!found) return ("Todolist not found");
 			let listItems=found.items;
 			listItems.splice(index, 0, item);
 
 			const updated = await Todolist.updateOne({_id:listId}, {items:listItems});
-			if(updated) return listItems;
-			else return found.items;
+			if(updated) return (objectId);
+			else return ('could not find item');
 		},
 
 		/** 
@@ -198,17 +204,37 @@ module.exports = {
 			}
 
 			if(!sorted){
-				listItems.sort();
+				for(let i=1;i<listItems.length;i++){
+					let key=listItems[i];
+					let j = i-1;
+					
+					while(j>=0 && listItems[j].description.localeCompare(key.description)>0){
+						listItems[j+1]=listItems[j];
+						j-=1;
+					}
+					listItems[j+1]=key;
+				}
 			}
 
 			else{
-				listItems.reverse();
+				for(let i=1;i<listItems.length;i++){
+					let key=listItems[i];
+					let j = i-1;
+					
+					while(j>=0 && listItems[j].description.localeCompare(key.description)<0){
+						listItems[j+1]=listItems[j];
+						j-=1;
+					}
+					
+					listItems[j+1]=key;
+				}
 			}
-
 			const updated=await Todolist.updateOne({_id:listId}, {items:listItems});
 			if(updated) return (listItems);
 			else return (found.items);	
+			
 		},
+	
 
 		sortItemsByDueDate: async (_, args) => {
 			const {_id}=args;
