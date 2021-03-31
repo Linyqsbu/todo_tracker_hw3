@@ -26,8 +26,7 @@ const App = () => {
 					path="/home" 
 					name="home" 
 					render={() => 
-						<Homescreen tps={transactionStack} fetchUser={refetch} user={user}
-						/>
+						<Homescreen tps={transactionStack} fetchUser={refetch} user={user} />
 					} 
 				/>
 				<Route/>

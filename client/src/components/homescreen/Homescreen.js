@@ -109,6 +109,7 @@ const Homescreen = (props) => {
 	const addItem = async () => {
 		let list = activeList;
 		const items = list.items;
+<<<<<<< HEAD
 		
 		var highestId;
 		for(let i=0;i<activeList.items.length;i++){
@@ -117,9 +118,12 @@ const Homescreen = (props) => {
 			}
 		}
 
+=======
+		const lastID = items.length >= 1 ? items[items.length - 1].id + 1 : 0;
+>>>>>>> parent of 30cdf4e (fixed a bug where the table entries have duplicate keys)
 		const newItem = {
 			_id: '',
-			id: highestId,
+			id: lastID,
 			description: 'No Description',
 			due_date: 'No Date',
 			assigned_to: "Unknown",
@@ -168,6 +172,7 @@ const Homescreen = (props) => {
 		let transaction = new EditItem_Transaction(listID, itemID, field, prev, value, flag, UpdateTodoItemField);
 		props.tps.addTransaction(transaction);
 		tpsRedo();
+
 	};
 
 	const reorderItem = async (itemID, dir) => {
@@ -262,7 +267,6 @@ const Homescreen = (props) => {
 
 
 	const createNewList = async () => {
-		props.tps.clearAllTransactions();
 		const length = todolists.length
 		const id = length >= 1 ? todolists[length - 1].id + Math.floor((Math.random() * 100) + 1) : 1;
 		let list = {
@@ -272,8 +276,9 @@ const Homescreen = (props) => {
 			owner: props.user._id,
 			items: [],
 		}
-		const { data } = await AddTodolist({ variables: { todolist: list }, refetchQueries: [{ query: GET_DB_TODOS }] });	
-		setActiveList(list);
+		const { data } = await AddTodolist({ variables: { todolist: list }, refetchQueries: [{ query: GET_DB_TODOS }] });
+		setActiveList(list)
+		props.tps.clearAllTransactions();
 	};
 
 	const deleteList = async (_id) => {
@@ -282,6 +287,10 @@ const Homescreen = (props) => {
 		setActiveList({});
 		props.tps.clearAllTransactions();
 	};
+	
+
+
+	
 
 
 	const updateListField = async (_id, field, value, prev) => {
