@@ -98,6 +98,10 @@ html, body {
     color: $text-color;
 }
 
+.sidebar-button-disabled{
+    background-color: gray;
+}
+
 .signup-modal{
     border:$modal-border;
 }
@@ -138,15 +142,21 @@ html, body {
 
 .table-header-button-disabled {
     color: var(--warm-black);
+
 }
+
 
 .table-entry-buttons-disabled{
     color: var(--warm-black);
 }
 
-.undo-redo-disabled {
+.undo-redo-button-disabled {
     color: var(--warm-black);
 }
+
+
+
+
 
 .table-header {
     border-bottom: 2px $text-color dotted;

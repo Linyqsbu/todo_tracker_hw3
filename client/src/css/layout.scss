@@ -79,6 +79,12 @@ html {
     cursor: default;
 }
 
+.undo-redo-button-disabled{
+    cursor:default;
+}
+
+
+
 .table-header-buttons {
     height: 100%;
     display: flex;
@@ -117,9 +123,14 @@ html {
 .sidebar-buttons {
     padding: 0;
 }
-
+.sidebar-buttons
 .modal-input {
     width: 100%;
+}
+
+.sidebar-button-disabled{
+    padding:0;
+    cursor:default;
 }
 
 .login-modal {
