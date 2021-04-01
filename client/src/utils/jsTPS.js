@@ -162,7 +162,6 @@ export class UpdateListItems_Transaction extends jsTPS_Transaction {
     }
     async doTransaction() {
         console.log(this.itemID);
-        console.log(this);
 		let data;
         this.opcode === 0 ? { data } = await this.deleteFunction({
 							variables: {itemId: this.itemID, _id: this.listID}})
@@ -171,14 +170,14 @@ export class UpdateListItems_Transaction extends jsTPS_Transaction {
 							variables: {item: this.item, _id: this.listID}});
         
         
-		if(this.opcode !== 0) {
+		if(this.opcode === 1) {
             this.item._id = this.itemID = data.addItem;
 		}
-        
 		return data;
     }
     // Since delete/add are opposites, flip matching opcode
     async undoTransaction() {
+        console.log(this.itemID);
 		let data;
         this.opcode === 1 ? { data } = await this.deleteFunction({
 							variables: {itemId: this.itemID, _id: this.listID}})
@@ -186,7 +185,7 @@ export class UpdateListItems_Transaction extends jsTPS_Transaction {
 							variables: {item: this.item, _id: this.listID, index:this.index}});
         /*
 		if(this.opcode !== 1) {
-            this.item._id = this.itemID = data.addItem;
+            this.item._id = this.itemID = data.addItemWithIndex;
         }
         */
 		return data;

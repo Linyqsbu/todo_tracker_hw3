@@ -42,7 +42,7 @@ const Homescreen = (props) => {
 	const [SortItemsByAssignedTo]	= useMutation(mutations.SORT_ITEMS_BY_ASSIGNED_TO);
 	const [UnsortItems]				= useMutation(mutations.UNSORT_ITEMS);
 	const [AddItemWithIndex]		= useMutation(mutations.ADD_ITEM_WITH_INDEX);
-	
+	const [MoveListToTop]			= useMutation(mutations.MOVE_LIST_TO_TOP);
 
 	useEffect(() => {
 		document.addEventListener("keydown", handleKeyDown);
@@ -130,7 +130,6 @@ const Homescreen = (props) => {
 		let itemID = newItem._id;
 		let listID = activeList._id;
 		let transaction = new UpdateListItems_Transaction(listID, itemID, newItem, opcode, AddTodoItem, DeleteTodoItem);
-		//let transaction = new AddItem_Transaction(listID, newItem, AddTodoItem, DeleteTodoItem);
 		props.tps.addTransaction(transaction);
 		tpsRedo();
 	};
@@ -268,13 +267,14 @@ const Homescreen = (props) => {
 
 
 	const createNewList = async () => {
-		const length = todolists.length
+		const length = todolists.length;
 		const id = length >= 1 ? todolists[length - 1].id + Math.floor((Math.random() * 100) + 1) : 1;
 		let list = {
 			_id: '',
 			id: id,
 			name: 'Untitled',
 			owner: props.user._id,
+			isTopList:false,
 			items: [],
 		}
 		const { data } = await AddTodolist({ variables: { todolist: list }, refetchQueries: [{ query: GET_DB_TODOS }] });
@@ -297,9 +297,16 @@ const Homescreen = (props) => {
 
 	};
 
-	const handleSetActive = (id) => {
-		const todo = todolists.find(todo => todo.id === id || todo._id === id);
+	const handleSetActive = async (id) => {
+		const lastActiveList = todolists.find(todo => todo.isTopList);
+		let lastActiveListId;
+		if(lastActiveList)
+			lastActiveListId=lastActiveList._id
+		const {data} = await MoveListToTop({variables:{activeId:lastActiveListId, _id:id}});
+		await refetchTodos(refetch);
+		const todo = todolists.find(todo => todo._id == id);
 		setActiveList(todo);
+		console.log(todo.name);
 		props.tps.clearAllTransactions();
 	};
 
@@ -355,7 +362,7 @@ const Homescreen = (props) => {
 					{
 						activeList ?
 							<SidebarContents
-								todolists={todolists} activeid={activeList.id} auth={auth}
+								todolists={todolists} activeid={activeList._id} auth={auth}
 								handleSetActive={handleSetActive} createNewList={createNewList}
 								
 								updateListField={updateListField}
@@ -401,7 +408,7 @@ const Homescreen = (props) => {
 			}
 
 			{
-				showLogin && (<WModal visible={true} className="modal-overlay">
+				showLogin && (<WModal visible={true}  className="modal-overlay">
 								<Login fetchUser={props.fetchUser} refetchTodos={refetch} setShowLogin={setShowLogin} />
 								</WModal>)
 			}

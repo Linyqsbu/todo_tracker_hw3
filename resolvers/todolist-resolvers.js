@@ -15,9 +15,23 @@ module.exports = {
 			const _id = new ObjectId(req.userId);
 			if(!_id) { return([])};
 			const todolists = await Todolist.find({owner: _id});
-			if(todolists) return (todolists);
-
+			
+			if(todolists){
+				const index = todolists.findIndex(todo => todo.isTopList);
+				const todo = todolists.find(todo => todo.isTopList);
+				if(index>=0){
+					todolists.splice(index,1);
+				}
+				if(todo){
+					todolists.unshift(todo);
+				}
+				
+			}
+			return (todolists);
+			
+			
 		},
+
 		/** 
 		 	@param 	 {object} args - a todolist id
 			@returns {object} a todolist on success and an empty object on failure
@@ -31,6 +45,21 @@ module.exports = {
 		},
 	},
 	Mutation: {
+		
+		moveListToTop: async (_, args) => {
+			const{activeId, _id} = args;
+			const listId = new ObjectId(_id);
+			if(activeId){
+				const activeListId = new ObjectId(activeId);
+				const updateActiveList = await Todolist.updateOne({_id:activeListId}, {isTopList:false});
+			}
+			const updateList = await Todolist.updateOne({_id:listId}, {isTopList:true});
+
+			if(updateList) return ("Todolist updated")
+			else return ("cannot find todolist");
+		},
+		
+		
 		/** 
 		 	@param 	 {object} args - a todolist id and an empty item object
 			@returns {string} the objectID of the item or an error message
@@ -41,18 +70,16 @@ module.exports = {
 			const objectId = new ObjectId();
 			const found = await Todolist.findOne({_id: listId});
 			if(!found) return ("Todolist not fosund");
-			item._id = objectId;
-			let listItems = found.items;
-			if(index){
-				console.log(index)
-				listItems.splice(index, 0, item);
+			if(item._id === ''){
+				item._id = objectId;
 			}
-			else
-				listItems.push(item);
+			let listItems = found.items;
+			
+			listItems.push(item);
 			
 			const updated = await Todolist.updateOne({_id: listId}, { items: listItems });
 
-			if(updated) return (objectId);
+			if(updated) return (item._id);
 			else return ('could not find item');
 		},
 
@@ -77,12 +104,13 @@ module.exports = {
 		addTodolist: async (_, args) => {
 			const { todolist } = args;
 			const objectId = new ObjectId();
-			const { id, name, owner, items } = todolist;
+			const { id, name, owner, isTopList,items } = todolist;
 			const newList = new Todolist({
 				_id: objectId,
 				id: id,
 				name: name,
 				owner: owner,
+				isTopList: isTopList,
 				items: items
 			});
 			const updated = newList.save();

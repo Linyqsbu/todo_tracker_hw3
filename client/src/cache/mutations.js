@@ -162,3 +162,10 @@ export const SORT_ITEMS_BY_ASSIGNED_TO=gql`
 		}
 	}
 `;
+
+
+export const MOVE_LIST_TO_TOP = gql`
+	mutation MoveListToTop($activeId:String, $_id:String!){
+		moveListToTop(activeId:$activeId, _id:$_id)
+	}
+`;

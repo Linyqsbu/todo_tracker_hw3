@@ -7,6 +7,7 @@ const typeDefs = gql `
 		id: Int!
 		name: String!
 		owner: String!
+		isTopList:Boolean
 		items: [Item]
 	}
 	type Item {
@@ -22,6 +23,7 @@ const typeDefs = gql `
 		getTodoById(_id: String!): Todolist 
 	}
 	extend type Mutation {
+		moveListToTop(activeId:String, _id:String!):String
 		addItem(item: ItemInput!, _id: String!): String
 		addItemWithIndex(item: ItemInput!, _id:String!, index:Int!): String
 		addTodolist(todolist: TodoInput!): String
@@ -46,6 +48,7 @@ const typeDefs = gql `
 		id: Int
 		name: String
 		owner: String
+		isTopList:Boolean
 		items: [ItemInput]
 	}
 	input ItemInput {
