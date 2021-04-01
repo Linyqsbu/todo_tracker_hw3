@@ -278,7 +278,13 @@ const Homescreen = (props) => {
 			items: [],
 		}
 		const { data } = await AddTodolist({ variables: { todolist: list }, refetchQueries: [{ query: GET_DB_TODOS }] });
-		setActiveList(list);
+		let listId = data.addTodolist;
+		await refetchTodos(refetch);
+		const todo = todolists.find(todo => todo._id == listId);
+		console.log(todolists);
+		console.log(listId);
+		console.log(todo);
+		handleSetActive(listId);
 		props.tps.clearAllTransactions();
 	};
 
