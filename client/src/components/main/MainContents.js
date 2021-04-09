@@ -14,7 +14,8 @@ const MainContents = (props) => {
                 sortItemsByStatus={props.sortItemsByStatus}
                 sortItemsByAssignedTo={props.sortItemsByAssignedTo}
                 undo={props.undo} redo={props.redo}
-                tps={props.tps}
+                tps={props.tps} undoable={props.undoable} redoable={props.redoable}
+                setUndoable={props.setUndoable} setRedoable={props.setRedoable}
             />
             <TableContents
                 key={props.activeList.id} activeList={props.activeList}

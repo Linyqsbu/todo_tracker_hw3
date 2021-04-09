@@ -28,6 +28,8 @@ const Homescreen = (props) => {
 	const [showDelete, toggleShowDelete] 	= useState(false);
 	const [showLogin, toggleShowLogin] 		= useState(false);
 	const [showCreate, toggleShowCreate] 	= useState(false);
+	const [undoable, setUndoable]			= useState(false);
+	const [redoable, setRedoable]			= useState(false);
 
 	const [ReorderTodoItems] 		= useMutation(mutations.REORDER_ITEMS);
 	const [UpdateTodoItemField] 	= useMutation(mutations.UPDATE_ITEM_FIELD);
@@ -43,7 +45,7 @@ const Homescreen = (props) => {
 	const [UnsortItems]				= useMutation(mutations.UNSORT_ITEMS);
 	const [AddItemWithIndex]		= useMutation(mutations.ADD_ITEM_WITH_INDEX);
 	const [MoveListToTop]			= useMutation(mutations.MOVE_LIST_TO_TOP);
-
+	
 	useEffect(() => {
 		document.addEventListener("keydown", handleKeyDown);
 		
@@ -76,13 +78,17 @@ const Homescreen = (props) => {
 
 	const tpsUndo = async () => {
 		const retVal = await props.tps.undoTransaction();
-		refetchTodos(refetch);
+		await refetchTodos(refetch);
+		setUndoable(props.tps.hasTransactionToUndo());
+		setRedoable(props.tps.hasTransactionToRedo());
 		return retVal;
 	}
 
 	const tpsRedo = async () => {
 		const retVal = await props.tps.doTransaction();
-		refetchTodos(refetch);
+		await refetchTodos(refetch);
+		setUndoable(props.tps.hasTransactionToUndo());
+		setRedoable(props.tps.hasTransactionToRedo());
 		return retVal;
 	}
 
@@ -286,6 +292,8 @@ const Homescreen = (props) => {
 		console.log(todo);
 		handleSetActive(listId);
 		props.tps.clearAllTransactions();
+		setUndoable(props.tps.hasTransactionToUndo());
+		setRedoable(props.tps.hasTransactionToRedo());
 	};
 
 	const deleteList = async (_id) => {
@@ -293,6 +301,8 @@ const Homescreen = (props) => {
 		refetch();
 		setActiveList({});
 		props.tps.clearAllTransactions();
+		setUndoable(props.tps.hasTransactionToUndo());
+		setRedoable(props.tps.hasTransactionToRedo());
 	};
 	
 
@@ -314,7 +324,11 @@ const Homescreen = (props) => {
 		setActiveList(todo);
 		console.log(todo.name);
 		props.tps.clearAllTransactions();
+		setUndoable(props.tps.hasTransactionToUndo());
+		setRedoable(props.tps.hasTransactionToRedo());
 	};
+
+	
 
 	
 
@@ -391,8 +405,9 @@ const Homescreen = (props) => {
 									sortItemsByDueDate={sortItemsByDueDate}
 									sortItemsByStatus={sortItemsByStatus}
 									sortItemsByAssignedTo={sortItemsByAssignedTo}
-									undo={tpsUndo} redo={tpsRedo}
-									tps={props.tps}
+									undo={tpsUndo} redo={tpsRedo} tps={props.tps}
+									setUndoable={setUndoable} setRedoable={setRedoable}
+									undoable={undoable} redoable={redoable}
 								/>
 							</div>
 						:

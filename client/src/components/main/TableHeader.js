@@ -5,8 +5,8 @@ import { WButton, WRow, WCol } from 'wt-frontend';
 const TableHeader = (props) => {
 
     const buttonStyle = props.disabled ? ' table-header-button-disabled ' : 'table-header-button ';
-    const undoButtonStyle = props.tps.hasTransactionToUndo() ? 'undo-redo' : 'undo-redo-button-disabled';
-    const redoButtonStyle = props.tps.hasTransactionToRedo() ? 'undo-redo' : 'undo-redo-button-disabled';
+    const undoButtonStyle = props.undoable ? 'undo-redo' : 'undo-redo-button-disabled';
+    const redoButtonStyle = props.redoable ? 'undo-redo' : 'undo-redo-button-disabled';
     const clickDisabled = () => { };
     
     return (
@@ -41,7 +41,7 @@ const TableHeader = (props) => {
                     <WButton onClick={props.disabled ? clickDisabled : props.setShowDelete} wType="texted" className={`${buttonStyle}`}>
                         <i className="material-icons">delete_outline</i>
                     </WButton>
-                    <WButton onClick={props.disabled ? clickDisabled : () =>{props.tps.clearAllTransactions(); props.setActiveList({});}} wType="texted" className={`${buttonStyle}`}>
+                    <WButton onClick={props.disabled ? clickDisabled : () =>{props.tps.clearAllTransactions(); props.setActiveList({});props.setUndoable(false);props.setRedoable(false);}} wType="texted" className={`${buttonStyle}`}>
                         <i className="material-icons">close</i>
                     </WButton>
                     
