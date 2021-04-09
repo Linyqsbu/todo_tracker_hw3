@@ -402,21 +402,21 @@ const Homescreen = (props) => {
 			</WLMain>
 
 			{
-				showDelete && (<WModal visible={true} className="modal-overlay">
+				showDelete && (<div className="modal-overlay">
 								<Delete deleteList={deleteList} activeid={activeList._id} setShowDelete={setShowDelete} />
-								</WModal>)
+								</div>)
 			}
 
 			{
-				showCreate && (<WModal visible={true} className="modal-overlay">
+				showCreate && (<div className="modal-overlay">
 								<CreateAccount fetchUser={props.fetchUser} setShowCreate={setShowCreate} />
-								</WModal>)
+								</div>)
 			}
 
 			{
-				showLogin && (<WModal visible={true}  className="modal-overlay">
+				showLogin && (<div className="modal-overlay">
 								<Login fetchUser={props.fetchUser} refetchTodos={refetch} setShowLogin={setShowLogin} />
-								</WModal>)
+								</div>)
 			}
 
 		</WLayout>
